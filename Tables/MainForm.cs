@@ -13,26 +13,28 @@ namespace Tables
 {
     public partial class MainForm : Form
     {
-        public List<Client> ClientList = new List<Client>();
+        //public List<Client> ClientList = new List<Client>();
+        TableAdapter table = null;
         public MainForm()
         {
             InitializeComponent();
-            string connectionString = ConfigurationManager.ConnectionStrings["myConnString"].ConnectionString;
-            using (SqlConnection con = new SqlConnection())
-            {
-                con.ConnectionString = connectionString;
-                con.Open();
-                string com = "Select * From Contact";
-                SqlCommand SqlCom = new SqlCommand(com, con);
-                using (SqlDataReader reader = SqlCom.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        ClientList.Add(new Client() { FirstName = reader["FirstName"].ToString(), LastName = reader["LastName"].ToString(), Phone = reader["Phone"].ToString(), Email = reader["Email"].ToString(), Id = int.Parse(reader["Id"].ToString()) });
-                    }
-                }
-            }
-            ContactView.DataSource = ClientList;
+            table = new TableAdapter(ConfigurationManager.ConnectionStrings["myConnString"].ConnectionString);
+            ContactView.DataSource = table.GetAllContact();
+            //using (SqlConnection con = new SqlConnection())
+            //{
+            //    con.ConnectionString = connectionString;
+            //    con.Open();
+            //    string com = "Select * From Contact";
+            //    SqlCommand SqlCom = new SqlCommand(com, con);
+            //    using (SqlDataReader reader = SqlCom.ExecuteReader())
+            //    {
+            //        while (reader.Read())
+            //        {
+            //            ClientList.Add(new Client() { FirstName = reader["FirstName"].ToString(), LastName = reader["LastName"].ToString(), Phone = reader["Phone"].ToString(), Email = reader["Email"].ToString(), Id = int.Parse(reader["Id"].ToString()) });
+            //        }
+            //    }
+            //}
+            //ContactView.DataSource = ClientList;
         }
 
         /// <summary>
@@ -42,24 +44,35 @@ namespace Tables
         /// <param name="e"></param>
         private void contact_Click(object sender, EventArgs e)
         {
-            ClientList.Clear();
-            string connectionString = ConfigurationManager.ConnectionStrings["myConnString"].ConnectionString;
-            using (SqlConnection con = new SqlConnection())
+            DataTable changedDT = (DataTable)ContactView.DataSource;
+            try
             {
-                con.ConnectionString = connectionString;
-                con.Open();
-                string com = "Select * From Contact";
-                SqlCommand SqlCom = new SqlCommand(com, con);
-                using (SqlDataReader reader = SqlCom.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        ClientList.Add(new Client() { FirstName = reader["FirstName"].ToString(), LastName = reader["LastName"].ToString(), Phone = reader["Phone"].ToString(), Email = reader["Email"].ToString(), Id = int.Parse(reader["Id"].ToString()) });
-                    }
-                }
+                // Зафиксировать изменения.
+                table.UpdateContact(changedDT);
             }
-            ContactView.DataSource = null;
-            ContactView.DataSource = ClientList;
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+            //ClientList.Clear();
+            //string connectionString = ConfigurationManager.ConnectionStrings["myConnString"].ConnectionString;
+            //using (SqlConnection con = new SqlConnection())
+            //{
+            //    con.ConnectionString = connectionString;
+            //    con.Open();
+            //    string com = "Select * From Contact";
+            //    SqlCommand SqlCom = new SqlCommand(com, con);
+            //    using (SqlDataReader reader = SqlCom.ExecuteReader())
+            //    {
+            //        while (reader.Read())
+            //        {
+            //            ClientList.Add(new Client() { FirstName = reader["FirstName"].ToString(), LastName = reader["LastName"].ToString(), Phone = reader["Phone"].ToString(), Email = reader["Email"].ToString(), Id = int.Parse(reader["Id"].ToString()) });
+            //        }
+            //    }
+            //}
+            //ContactView.DataSource = null;
+            //ContactView.DataSource = ClientList;
         }
     }
 }
