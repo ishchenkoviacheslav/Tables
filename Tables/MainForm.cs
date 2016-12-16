@@ -13,44 +13,39 @@ namespace Tables
 {
     public partial class MainForm : Form
     {
-        //public List<Client> ClientList = new List<Client>();
         TableAdapter tableAdapt = null;
-        DataTable myTable = null; 
+        DataTable myTable = null;
         public MainForm()
         {
             InitializeComponent();
+            //в этом собитии закрытия при исключительной ситуации происходит отмета закрытия.
+            this.FormClosing += MainForm_FormClosing;
             tableAdapt = new TableAdapter(ConfigurationManager.ConnectionStrings["myConnString"].ConnectionString);
             myTable = tableAdapt.GetAllContact();
             ContactView.DataSource = myTable;
-          
-            foreach (DataRow row in myTable.Rows)
-            {
-                myTxtBox.Text += (row.RowState.ToString());
-            }
-            //using (SqlConnection con = new SqlConnection())
-            //{
-            //    con.ConnectionString = connectionString;
-            //    con.Open();
-            //    string com = "Select * From Contact";
-            //    SqlCommand SqlCom = new SqlCommand(com, con);
-            //    using (SqlDataReader reader = SqlCom.ExecuteReader())
-            //    {
-            //        while (reader.Read())
-            //        {
-            //            ClientList.Add(new Client() { FirstName = reader["FirstName"].ToString(), LastName = reader["LastName"].ToString(), Phone = reader["Phone"].ToString(), Email = reader["Email"].ToString(), Id = int.Parse(reader["Id"].ToString()) });
-            //        }
-            //    }
-            //}
-            //ContactView.DataSource = ClientList;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            try
+            {
+                SaveAndChek();
+            }
+            catch (Exception)
+            {
+                e.Cancel = true;
+                MessageBox.Show("Чтото при сохранении пошло не так...Закрытие программы было отменено");
+            }
+        }
+
         private void contact_Click(object sender, EventArgs e)
         {
+            SaveAndChek();
+        }
+
+        private void SaveAndChek()
+        {
+            string RowWithoutSave = string.Empty;
             //наша измененная версия
             DataTable changedDT = (DataTable)ContactView.DataSource;
             //свежая текущая версия из базы данных, нужна для сравнения
@@ -62,56 +57,27 @@ namespace Tables
                 {
                     //в стоке ничего не менялось
                     case 1:
-                        
+
                         break;
-                    
+
                     case 2:
 
                         break;
                     //строка была изменена НО другой пользователь уже успел внести изменения
                     //в ту же строку поэтому наши данные по этой стоке не сохраняются
                     case 3:
+                        RowWithoutSave += ((changedDT.Rows[i])["Id"]);
                         changedDT.Rows[i].RejectChanges();
                         break;
                 }
-                
-            }
-            try
-            {
-                // Зафиксировать изменения.
-                tableAdapt.UpdateContact(changedDT);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
+
             }
 
-            //ClientList.Clear();
-            //string connectionString = ConfigurationManager.ConnectionStrings["myConnString"].ConnectionString;
-            //using (SqlConnection con = new SqlConnection())
-            //{
-            //    con.ConnectionString = connectionString;
-            //    con.Open();
-            //    string com = "Select * From Contact";
-            //    SqlCommand SqlCom = new SqlCommand(com, con);
-            //    using (SqlDataReader reader = SqlCom.ExecuteReader())
-            //    {
-            //        while (reader.Read())
-            //        {
-            //            ClientList.Add(new Client() { FirstName = reader["FirstName"].ToString(), LastName = reader["LastName"].ToString(), Phone = reader["Phone"].ToString(), Email = reader["Email"].ToString(), Id = int.Parse(reader["Id"].ToString()) });
-            //        }
-            //    }
-            //}
-            //ContactView.DataSource = null;
-            //ContactView.DataSource = ClientList;
-        }
-
-        private void infoAfterChange_Click(object sender, EventArgs e)
-        {
-            myTxtBox.Text = string.Empty;
-            foreach (DataRow row in myTable.Rows)
+            // Зафиксировать изменения.
+            tableAdapt.UpdateContact(changedDT);
+            if (RowWithoutSave != string.Empty)
             {
-                myTxtBox.Text += (row.RowState.ToString());
+                MessageBox.Show(string.Format("Строка с Id: {0} сохранена не была. \n", RowWithoutSave));
             }
         }
 

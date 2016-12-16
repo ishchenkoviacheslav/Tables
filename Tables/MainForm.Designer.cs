@@ -30,8 +30,6 @@
         {
             this.ContactView = new System.Windows.Forms.DataGridView();
             this.contact = new System.Windows.Forms.Button();
-            this.myTxtBox = new System.Windows.Forms.TextBox();
-            this.infoAfterChange = new System.Windows.Forms.Button();
             this.btnUpd = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.ContactView)).BeginInit();
             this.SuspendLayout();
@@ -47,37 +45,19 @@
             // 
             // contact
             // 
-            this.contact.Location = new System.Drawing.Point(676, 13);
+            this.contact.Location = new System.Drawing.Point(350, 319);
             this.contact.Name = "contact";
-            this.contact.Size = new System.Drawing.Size(83, 300);
+            this.contact.Size = new System.Drawing.Size(297, 55);
             this.contact.TabIndex = 1;
             this.contact.Text = "Save to DataBase";
             this.contact.UseVisualStyleBackColor = true;
             this.contact.Click += new System.EventHandler(this.contact_Click);
             // 
-            // myTxtBox
-            // 
-            this.myTxtBox.Location = new System.Drawing.Point(815, 22);
-            this.myTxtBox.Multiline = true;
-            this.myTxtBox.Name = "myTxtBox";
-            this.myTxtBox.Size = new System.Drawing.Size(291, 291);
-            this.myTxtBox.TabIndex = 2;
-            // 
-            // infoAfterChange
-            // 
-            this.infoAfterChange.Location = new System.Drawing.Point(34, 340);
-            this.infoAfterChange.Name = "infoAfterChange";
-            this.infoAfterChange.Size = new System.Drawing.Size(200, 55);
-            this.infoAfterChange.TabIndex = 3;
-            this.infoAfterChange.Text = "infoAfterChange";
-            this.infoAfterChange.UseVisualStyleBackColor = true;
-            this.infoAfterChange.Click += new System.EventHandler(this.infoAfterChange_Click);
-            // 
             // btnUpd
             // 
-            this.btnUpd.Location = new System.Drawing.Point(295, 340);
+            this.btnUpd.Location = new System.Drawing.Point(12, 319);
             this.btnUpd.Name = "btnUpd";
-            this.btnUpd.Size = new System.Drawing.Size(335, 55);
+            this.btnUpd.Size = new System.Drawing.Size(309, 55);
             this.btnUpd.TabIndex = 4;
             this.btnUpd.Text = "Get from DataBase";
             this.btnUpd.UseVisualStyleBackColor = true;
@@ -87,17 +67,14 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1145, 472);
+            this.ClientSize = new System.Drawing.Size(673, 394);
             this.Controls.Add(this.btnUpd);
-            this.Controls.Add(this.infoAfterChange);
-            this.Controls.Add(this.myTxtBox);
             this.Controls.Add(this.contact);
             this.Controls.Add(this.ContactView);
             this.Name = "MainForm";
             this.Text = "Table";
             ((System.ComponentModel.ISupportInitialize)(this.ContactView)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -105,8 +82,6 @@
 
         private System.Windows.Forms.DataGridView ContactView;
         private System.Windows.Forms.Button contact;
-        private System.Windows.Forms.TextBox myTxtBox;
-        private System.Windows.Forms.Button infoAfterChange;
         private System.Windows.Forms.Button btnUpd;
     }
 }
