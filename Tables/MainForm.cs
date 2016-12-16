@@ -34,7 +34,7 @@ namespace Tables
             catch (Exception)
             {
                 e.Cancel = true;
-                MessageBox.Show("Чтото при сохранении пошло не так...Закрытие программы было отменено");
+                MessageBox.Show("Некоторые(или все) данные не были сохранены...Закрытие программы было отменено");
             }
         }
 
@@ -78,6 +78,7 @@ namespace Tables
             if (RowWithoutSave != string.Empty)
             {
                 MessageBox.Show(string.Format("Строка с Id: {0} сохранена не была. \n", RowWithoutSave));
+                throw new Exception();
             }
         }
 
