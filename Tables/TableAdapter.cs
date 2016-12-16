@@ -32,10 +32,10 @@ namespace Tables
             dAdapt.Fill(inv);
             return inv;
         }
-//        Здесь объект адаптера данных проверяет значение RowState у каждой строки
-//входной таблицы DataTable.В зависимости от его значения(т.е.RowState.Added,
-//RowState.Deleted или RowState.Modified) автоматически используется нужный
-//объект команды.
+        //        Здесь объект адаптера данных проверяет значение RowState у каждой строки
+        //входной таблицы DataTable.В зависимости от его значения(т.е.RowState.Added,
+        //RowState.Deleted или RowState.Modified) автоматически используется нужный
+        //объект команды.
 
         public void UpdateContact(DataTable modifiedTable)
         {
