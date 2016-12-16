@@ -14,12 +14,19 @@ namespace Tables
     public partial class MainForm : Form
     {
         //public List<Client> ClientList = new List<Client>();
-        TableAdapter table = null;
+        TableAdapter tableAdapt = null;
+        DataTable myTable = null; 
         public MainForm()
         {
             InitializeComponent();
-            table = new TableAdapter(ConfigurationManager.ConnectionStrings["myConnString"].ConnectionString);
-            ContactView.DataSource = table.GetAllContact();
+            tableAdapt = new TableAdapter(ConfigurationManager.ConnectionStrings["myConnString"].ConnectionString);
+            myTable = tableAdapt.GetAllContact();
+            ContactView.DataSource = myTable;
+          
+            foreach (DataRow row in myTable.Rows)
+            {
+                myTxtBox.Text += (row.RowState.ToString());
+            }
             //using (SqlConnection con = new SqlConnection())
             //{
             //    con.ConnectionString = connectionString;
@@ -44,11 +51,35 @@ namespace Tables
         /// <param name="e"></param>
         private void contact_Click(object sender, EventArgs e)
         {
+            //наша измененная версия
             DataTable changedDT = (DataTable)ContactView.DataSource;
+            //свежая текущая версия из базы данных, нужна для сравнения
+            DataTable freshTableFromDB = tableAdapt.GetAllContact();
+            for (int i = 0; i < freshTableFromDB.Rows.Count; i++)
+            {
+                //найти происходили ли изменения в базе данных с момента нашего последнего получения данных.
+                switch (RowComparer.Compare(changedDT.Rows[i], freshTableFromDB.Rows[i]))
+                {
+                    //в стоке ничего не менялось
+                    case 1:
+                        
+                        break;
+                    
+                    case 2:
+
+                        break;
+                    //строка была изменена НО другой пользователь уже успел внести изменения
+                    //в ту же строку поэтому наши данные по этой стоке не сохраняются
+                    case 3:
+                        changedDT.Rows[i].RejectChanges();
+                        break;
+                }
+                
+            }
             try
             {
                 // Зафиксировать изменения.
-                table.UpdateContact(changedDT);
+                tableAdapt.UpdateContact(changedDT);
             }
             catch (Exception ex)
             {
@@ -73,6 +104,20 @@ namespace Tables
             //}
             //ContactView.DataSource = null;
             //ContactView.DataSource = ClientList;
+        }
+
+        private void infoAfterChange_Click(object sender, EventArgs e)
+        {
+            myTxtBox.Text = string.Empty;
+            foreach (DataRow row in myTable.Rows)
+            {
+                myTxtBox.Text += (row.RowState.ToString());
+            }
+        }
+
+        private void btnUpd_Click(object sender, EventArgs e)
+        {
+            ContactView.DataSource = tableAdapt.GetAllContact();
         }
     }
 }
