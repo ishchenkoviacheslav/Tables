@@ -40,7 +40,14 @@ namespace Tables
 
         private void contact_Click(object sender, EventArgs e)
         {
-            SaveAndChek();
+            try
+            {
+                SaveAndChek();
+            }
+            catch (Exception)
+            {
+               
+            }
         }
 
         private void SaveAndChek()
